@@ -30,3 +30,18 @@ def test_create_note_rejects_bad_input(client, body):
     res = client.post("/notes", json=body)
     assert res.status_code == 400
     assert "error" in res.get_json()
+
+
+def test_notes_count_empty(client):
+    res = client.get("/notes/count")
+    assert res.status_code == 200
+    assert res.get_json() == {"count": 0}
+
+
+def test_notes_count_after_creating_notes(client):
+    client.post("/notes", json={"text": "buy milk"})
+    client.post("/notes", json={"text": "walk dog"})
+    client.post("/notes", json={"text": "read book"})
+    res = client.get("/notes/count")
+    assert res.status_code == 200
+    assert res.get_json() == {"count": 3}
