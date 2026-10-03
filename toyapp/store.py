@@ -13,3 +13,6 @@ class NoteStore:
 
     def list(self) -> list[dict]:
         return list(self._notes.values())
+
+    def count(self) -> int:
+        return len(self._notes)

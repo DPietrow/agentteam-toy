@@ -15,12 +15,18 @@ def create_app() -> Flask:
     def list_notes():
         return jsonify(store.list())
 
+    @app.get("/notes/count")
+    def get_notes_count():
+        return jsonify(count=store.count())
+
     @app.post("/notes")
     def create_note():
         body = request.get_json(silent=True) or {}
         text = body.get("text")
         if not isinstance(text, str) or not text.strip():
-            return jsonify(error="'text' must be a non-empty string"), 400
+            return jsonify(
+                error="'text' must be a non-empty string"
+            ), 400
         return jsonify(store.add(text.strip())), 201
 
     return app
