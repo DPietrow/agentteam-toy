@@ -19,6 +19,13 @@ def create_app() -> Flask:
     def get_notes_count():
         return jsonify(count=store.count())
 
+    @app.get("/notes/<int:id>")
+    def get_note(id):
+        note = store.get(id)
+        if note is None:
+            return jsonify(error="Note not found"), 404
+        return jsonify(note)
+
     @app.post("/notes")
     def create_note():
         body = request.get_json(silent=True) or {}
