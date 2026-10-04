@@ -16,3 +16,6 @@ class NoteStore:
 
     def count(self) -> int:
         return len(self._notes)
+
+    def get(self, id: int) -> dict | None:
+        return self._notes.get(id)

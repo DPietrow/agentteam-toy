@@ -45,3 +45,27 @@ def test_notes_count_after_creating_notes(client):
     res = client.get("/notes/count")
     assert res.status_code == 200
     assert res.get_json() == {"count": 3}
+
+
+def test_get_note_by_id(client):
+    res = client.post("/notes", json={"text": "buy milk"})
+    note_id = res.get_json()["id"]
+    res = client.get(f"/notes/{note_id}")
+    assert res.status_code == 200
+    assert res.get_json() == {"id": note_id, "text": "buy milk"}
+
+
+def test_get_note_not_found(client):
+    res = client.get("/notes/999")
+    assert res.status_code == 404
+    assert "error" in res.get_json()
+
+
+def test_get_note_with_multiple_notes(client):
+    client.post("/notes", json={"text": "first"})
+    res = client.post("/notes", json={"text": "second"})
+    note_id = res.get_json()["id"]
+    client.post("/notes", json={"text": "third"})
+    res = client.get(f"/notes/{note_id}")
+    assert res.status_code == 200
+    assert res.get_json() == {"id": note_id, "text": "second"}
